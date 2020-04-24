@@ -13,7 +13,7 @@ import requests
 workpath="Y:/www/jjs/currentdata/pic/radar/png/"
 basemap="Y:/www/jjs/currentdata/pic/radar/gzmap_sb.png"
 sbfile="Y:/www/jjs/currentdata/pic/radar/sebiao.png"
-cimissUser="yourUserName"
+cimissUser="yourUserName000"
 cimissPsw="111"
 def deleteOldFiles(dirs,fnameRex,delDays):
 	#获得当前日期
