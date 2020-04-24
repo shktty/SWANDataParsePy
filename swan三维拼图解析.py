@@ -10,11 +10,12 @@ import datetime
 import time
 import re
 import requests
-workpath="Y:/www/jjs/currentdata/pic/radar/png/"
-basemap="Y:/www/jjs/currentdata/pic/radar/gzmap_sb.png"
-sbfile="Y:/www/jjs/currentdata/pic/radar/sebiao.png"
-cimissUser="yourUserName000"
-cimissPsw="111"
+basepath="Y:/"
+workpath=basepath + "radarpic/"
+basemap=basepath + "gzmap_sb.png"
+sbfile=basepath + "sebiao.png"
+cimissUser="123"
+cimissPsw="124"
 def deleteOldFiles(dirs,fnameRex,delDays):
 	#获得当前日期
 	today = datetime.date.today()
@@ -46,6 +47,7 @@ def deleteOldFiles(dirs,fnameRex,delDays):
 				#比较日期，删除较早的文件
 				if (leastday > filedate):
 					print("删除",destfile)
+					
 					os.remove(destfile)
 def readInt(f,byteCount):
 	return struct.unpack('<i', f.read(byteCount))[0]
@@ -54,7 +56,7 @@ def readShort(f,byteCount):
 def readChar(f,byteCount):
 	return struct.unpack('b', f.read(byteCount))[0]
 def readStr(f,byteCount):
-	return str(f.read(byteCount).decode('GBK','ignore')).strip()
+	return str(f.read(byteCount).decode('GBK','ignore')).strip().replace('\x00', '')
 def readFloat(f,byteCount):
 	return struct.unpack('<f', f.read(byteCount))[0]
 def putText(img,text,left,top,fontsize):
@@ -196,10 +198,7 @@ def readFiles(files):
 	YNumgrids=readShort(f,2)
 	ZNumgrids=readShort(f,2)
 	RadarCount=readInt(f,4)
-	StartLon=readFloat(f,4)
-	StartLat=readFloat(f,4)
-	CenterLon=readFloat(f,4)
-	CenterLat=readFloat(f,4)
+	StartLon,StartLat,CenterLon,CenterLat=struct.unpack('3fi', f.read(16))
 	XReso=round(readFloat(f,4),2)
 	YReso=round(readFloat(f,4),2)
 	RadarStationName=[]
@@ -243,7 +242,7 @@ def readFiles(files):
 #url_分布式数据库="http://10.203.7.71:8080/DataService?requestType=getData&directory=SWAN_PRODUCT/LOCAL/NCRAD/TDPRODUCT/MCR/&fileName=Z_OTHE_RADAMCR_20190827004200.BIN.BZ2"
 def getFilesCimiss():
 	timeend=(datetime.datetime.now()+datetime.timedelta(hours=-8)).strftime("%Y%m%d%H%M%S")
-	timestart=(datetime.datetime.now()+datetime.timedelta(hours=-11)).strftime("%Y%m%d%H%M%S")
+	timestart=(datetime.datetime.now()+datetime.timedelta(hours=-9)).strftime("%Y%m%d%H%M%S")
 	url="http://10.203.89.55/cimiss-web/api?userId="+cimissUser+""\
 		"&pwd="+cimissPsw+"&interfaceId=getRadaFileByTimeRange&elements=FILE_NAME_ORIG"\
 		"&dataCode=RADA_SWAN_L3_MCR&timeRange=["+timestart+","+timeend+"]&"\
